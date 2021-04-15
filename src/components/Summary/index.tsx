@@ -1,9 +1,31 @@
+import { useTransactions } from '../../hooks/useTransactions'
+import { formatCurrency } from '../../utils/formatCurrency'
+
 import incomeImg from '../../assets/income.svg'
 import expenseImg from '../../assets/expense.svg'
 import totalImg from '../../assets/total.svg'
+
 import { SummaryContainer } from './styles'
 
 export function Summary() {
+  const { transactions } = useTransactions()
+
+  const summary = transactions.reduce((acc, transaction) => {
+    if (transaction.type === 'income') {
+      acc.income += transaction.amount
+      acc.total += transaction.amount
+    } else {
+      acc.expenses += transaction.amount
+      acc.total -= transaction.amount
+    }
+
+    return acc
+  }, {
+    income: 0,
+    expenses: 0,
+    total: 0,
+  })
+
   return (
     <SummaryContainer>
       <div>
@@ -12,7 +34,7 @@ export function Summary() {
           <img src={incomeImg} alt="Income" />
         </header>
         <strong>
-          1.000,00 Mts
+          {formatCurrency(summary.income)}
         </strong>
       </div>
       <div>
@@ -21,7 +43,7 @@ export function Summary() {
           <img src={expenseImg} alt="Expenses" />
         </header>
         <strong>
-          -500,00 Mts
+          {formatCurrency(summary.expenses)}
         </strong>
       </div>
       <div>
@@ -30,7 +52,7 @@ export function Summary() {
           <img src={totalImg} alt="overall" />
         </header>
         <strong>
-          500,00 Mts
+          {formatCurrency(summary.total)}
         </strong>
       </div>
     </SummaryContainer>
