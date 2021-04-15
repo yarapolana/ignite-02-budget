@@ -1,6 +1,11 @@
 import { TransactionsContainer } from './styles'
+import { useTransactions } from '../../hooks/useTransactions'
+import { formatDate } from '../../utils/formatDate'
+import { formatCurrency } from '../../utils/formatCurrency'
 
 export function TransactionsTable() {
+  const { transactions } = useTransactions()
+
   return (
     <TransactionsContainer>
       <table>
@@ -14,36 +19,17 @@ export function TransactionsTable() {
         </thead>
 
         <tbody>
-          <tr>
-            <td>Web development</td>
-            <td className="income">12.000 Mts</td>
-            <td>Development</td>
-            <td>20.02.2021</td>
-          </tr>
-          <tr>
-            <td>Web development</td>
-            <td className="expense">-12.000 Mts</td>
-            <td>Development</td>
-            <td>20.02.2021</td>
-          </tr>
-          <tr>
-            <td>Web development</td>
-            <td>12.000 Mts</td>
-            <td>Development</td>
-            <td>20.02.2021</td>
-          </tr>
-          <tr>
-            <td>Web development</td>
-            <td>12.000 Mts</td>
-            <td>Development</td>
-            <td>20.02.2021</td>
-          </tr>
-          <tr>
-            <td>Web development</td>
-            <td>12.000 Mts</td>
-            <td>Development</td>
-            <td>20.02.2021</td>
-          </tr>
+          {transactions?.map((transaction) => (
+            <tr key={transaction.id}>
+              <td>{transaction.title}</td>
+              <td className={transaction.type}>
+                {transaction.type === 'expense' && '-'}{' '}
+                {formatCurrency(transaction.amount)}
+              </td>
+              <td>{transaction.category}</td>
+              <td>{formatDate(transaction.createdAt)}</td>
+            </tr>
+          ))}
         </tbody>
       </table>
     </TransactionsContainer>
